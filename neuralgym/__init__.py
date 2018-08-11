@@ -6,7 +6,7 @@ from logging.config import dictConfig
 from .utils.logger import colorize
 
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __all__ = ['Config', 'get_gpus', 'set_gpus', 'date_uid', 'unset_logger',
            'get_sess']
 
