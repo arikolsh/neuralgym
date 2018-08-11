@@ -1,2 +1,7 @@
 **neuralgym_logs**
 docs/build
+.idea/workspace.xml
+.idea/vcs.xml
+.idea/neuralgym.iml
+.idea/modules.xml
+.idea/misc.xml
