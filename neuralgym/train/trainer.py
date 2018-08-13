@@ -1,13 +1,14 @@
-import os, time
+import time
 import logging
 
 import numpy as np
 import tensorflow as tf
-import tensorlayer as tl
+
 from ..utils.logger import ProgressBar
 from ..callbacks import CallbackLoc
 from ..callbacks import PeriodicCallback, OnceCallback, ScheduledCallback
 from ..ops.train_ops import process_gradients
+
 
 logger = logging.getLogger()
 
@@ -107,23 +108,6 @@ class Trainer(object):
 
         """
         sess = self.context['sess']
-        ###============================= LOAD VGG ===============================###
-        net_vgg = self.context['net_vgg']
-        if net_vgg is not None:
-            vgg19_npy_path = "vgg19.npy"
-            if not os.path.isfile(vgg19_npy_path):
-                print("Please download vgg19.npz from : https://github.com/machrisaa/tensorflow-vgg")
-                exit()
-            npz = np.load(vgg19_npy_path, encoding='latin1').item()
-
-            params = []
-            for val in sorted(npz.items()):
-                W = np.asarray(val[1][0])
-                b = np.asarray(val[1][1])
-                print("  Loading %s: %s, %s" % (val[0], W.shape, b.shape))
-                params.extend([W, b])
-            tl.files.assign_params(sess, params, net_vgg)
-        ###============================= LOAD VGG ===============================###
         max_iters = self.context['max_iters']
         self.update_callbacks()
         if self.context.get('global_step') is None:
@@ -204,7 +188,7 @@ class Trainer(object):
         step = step + 1
         epoch_end = (step % spe == 0)
         # set update step 0.1%
-        log_per_iters = max(int(spe / 1000), 10)
+        log_per_iters = max(int(spe/1000), 10)
         # update progress bar per log_per_iters
         epoch_nums = (step - 1) // spe + 1
         epoch_iters = (step - 1) % spe + 1
@@ -214,7 +198,7 @@ class Trainer(object):
                 'train epoch {},'.format(epoch_nums),
                 ' iter {}/{},'.format(epoch_iters, spe),
                 ' loss {:.6f}, {:.2f} batches/sec.'.format(
-                    self._log_stats[0] / epoch_iters, batches_per_sec),
+                    self._log_stats[0]/epoch_iters, batches_per_sec),
             ])
             # progress, if at the end of epoch, 100%; else current progress
             prog = 1 if epoch_end else (step / spe) % 1
